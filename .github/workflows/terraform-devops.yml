@@ -15,7 +15,7 @@ env:
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
   BLOB_NAME: t${{ secrets.BLOB_NAME }}
 
-  WORKING_DIRECTORY: ./
+  WORKING_DIRECTORY: ../
 
 permissions: read-all
 
