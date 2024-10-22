@@ -75,17 +75,17 @@ jobs:
           inlineScript: |
             az version
 
-            # # Create resource group
-            # az group create --name $RESOURCE_GROUP_NAME --location northeurope
+            # Create resource group
+            az group create --name $RESOURCE_GROUP_NAME --location northeurope
 
-            # # Create storage account
-            # az storage account create --name $STORAGE_ACCOUNT_NAME \
-            #    --resource-group $RESOURCE_GROUP_NAME \
-            #    --sku Standard_LRS \
-            #    --encryption-services blob
+            # Create storage account
+            az storage account create --name $STORAGE_ACCOUNT_NAME \
+               --resource-group $RESOURCE_GROUP_NAME \
+               --sku Standard_LRS \
+               --encryption-services blob
 
-            # # Create blob container
-            # az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
+            # Create blob container
+            az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
 
             # generate backend.tf file
             cd $WORKING_DIRECTORY
