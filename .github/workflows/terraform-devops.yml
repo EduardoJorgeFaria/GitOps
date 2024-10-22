@@ -15,7 +15,7 @@ env:
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
   BLOB_NAME: t${{ secrets.BLOB_NAME }}
 
-  WORKING_DIRECTORY: 05_Web_Sql_database
+  WORKING_DIRECTORY: ./
 
 jobs:
   scan-terraform-config:
