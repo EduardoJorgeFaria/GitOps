@@ -1,13 +1,13 @@
-name: 'Create Infra with Terraform'
+name: "Create Infra with Terraform"
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths: .github/workflows/terraform-devops.yml
-pull_request:
-  branches: none # [ main ]
+  pull_request:
+    branches: none # [ main ]
 # Allows to run this workflow manually from the Actions tab
-workflow_dispatch:
+  workflow_dispatch:
 
 env:
   RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
@@ -15,7 +15,7 @@ env:
   CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
   BLOB_NAME: t${{ secrets.BLOB_NAME }}
 
-  jobs:
+jobs:
   scan-terraform-config:
     runs-on: ubuntu-latest
     name: Scan Terraform with Checov
@@ -53,47 +53,47 @@ env:
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
     steps:
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v2
-                
-    - name: Login to Azure with Service Principal
-      uses: Azure/login@v1.4.3
-      with:
-        # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Create Terraform backend state storage
-      uses: Azure/cli@v1.0.6
-      with:
-        # Azure CLI version to be used to execute the script. If not provided, latest version is used
-        # azcliversion: 2.34.1 # optional, default is agentazcliversion
-        inlineScript: |
-          az version
+      - name: Login to Azure with Service Principal
+        uses: Azure/login@v1.4.3
+        with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-          # Create resource group
-          az group create --name $RESOURCE_GROUP_NAME --location northeurope
-          
-          # Create storage account
-          az storage account create --name $STORAGE_ACCOUNT_NAME \
-             --resource-group $RESOURCE_GROUP_NAME \
-             --sku Standard_LRS \
-             --encryption-services blob
-          
-          # Create blob container
-          az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
-          
-          # generate backend.tf file
-          cd $WORKING_DIRECTORY
-          cat <<EOT > backend.tf
-          terraform {
-            backend "azurerm" {
-              resource_group_name   = "$RESOURCE_GROUP_NAME"
-              storage_account_name  = "$STORAGE_ACCOUNT_NAME"
-              container_name        = "$CONTAINER_NAME"
-              key                   = "$BLOB_NAME"
+      - name: Create Terraform backend state storage
+        uses: Azure/cli@v1.0.6
+        with:
+          # Azure CLI version to be used to execute the script. If not provided, latest version is used
+          # azcliversion: 2.34.1 # optional, default is agentazcliversion
+          inlineScript: |
+            az version
+
+            # Create resource group
+            az group create --name $RESOURCE_GROUP_NAME --location northeurope
+
+            # Create storage account
+            az storage account create --name $STORAGE_ACCOUNT_NAME \
+               --resource-group $RESOURCE_GROUP_NAME \
+               --sku Standard_LRS \
+               --encryption-services blob
+
+            # Create blob container
+            az storage container create --name $CONTAINER_NAME --account-name $STORAGE_ACCOUNT_NAME
+
+            # generate backend.tf file
+            cd $WORKING_DIRECTORY
+            cat <<EOT > backend.tf
+            terraform {
+              backend "azurerm" {
+                resource_group_name   = "$RESOURCE_GROUP_NAME"
+                storage_account_name  = "$STORAGE_ACCOUNT_NAME"
+                container_name        = "$CONTAINER_NAME"
+                key                   = "$BLOB_NAME"
+              }
             }
-          }
-          EOT
-          
-          cat backend.tf
+            EOT
+
+            cat backend.tf
