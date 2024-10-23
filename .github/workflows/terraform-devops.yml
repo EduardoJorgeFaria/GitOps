@@ -62,13 +62,13 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Login to Azure with Service Principal
-        uses: Azure/login@v2.2
+        uses: Azure/login
         with:
           # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Create Terraform backend state storage
-        uses: Azure/cli@v2.65.0
+        uses: Azure/cli
         with:
           # Azure CLI version to be used to execute the script. If not provided, latest version is used
           # azcliversion: 2.34.1 # optional, default is agentazcliversion
